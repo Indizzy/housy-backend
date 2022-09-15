@@ -20,7 +20,17 @@ pipeline{
               }
           }
       }
-      stage ('building docker images'){
+      stage('building database'){
+	  steps{
+	     sshagent ([credential]){
+                 sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+		 docker compose up -d
+                 exit
+                 EOF"""
+	     }
+	}
+     } 
+      stage('building docker images'){
           steps{
               sshagent ([credential]) {
                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
@@ -36,7 +46,7 @@ pipeline{
               sshagent ([credential]) {
                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
                   cd ${directory}
-                  docker-compose up -d
+                  docker-compose -f fe-be.yaml
                   exit
                   EOF"""
               }
