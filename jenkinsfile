@@ -1,4 +1,4 @@
-def credential = 'grup3'
+def credential = 'kelompok3'
 def server = 'grup3@116.193.190.138'
 def directory = 'housy-backend'
 def url = 'https://github.com/Indizzy/housy-backend.git'
