@@ -1,9 +1,9 @@
-def credential = 'kelompok3'
+def credential = 'grup3'
 def server = 'grup3@116.193.190.138'
 def directory = 'housy-backend'
 def url = 'https://github.com/Indizzy/housy-backend.git'
 def branch = 'main'
-def images = 'grup3/housy-backend:v1'
+def images = 'indizzy/housy-backend:v1'
 
 pipeline{
   agent any
