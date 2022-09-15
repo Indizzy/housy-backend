@@ -1,9 +1,11 @@
 def credential = 'kelompok3'
+def userdock = 'indizzy'
 def server = 'grup3@116.193.190.138'
 def directory = 'housy-backend'
 def url = 'https://github.com/Indizzy/housy-backend.git'
 def branch = 'main'
-def images = 'indizzy/housy-backend:v1'
+def image = 'housy-backend'
+def image2 = 'housy-frontend'
 
 pipeline{
   agent any
@@ -34,7 +36,7 @@ pipeline{
           steps{
               sshagent ([credential]) {
                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                  docker compose -f fe-be.yaml
+                  docker compose -f fe-be.yaml up -d
                   exit
                   EOF"""
               }
@@ -44,13 +46,10 @@ pipeline{
             steps {
                 sshagent([credential]) {
 			sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-			docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
-			docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
-			docker image push ${dockerusername}/${imagename}:latest
-			docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
-			docker image rm ${dockerusername}/${imagename}:latest
-			docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
-			docker image rm ${imagename}:${env.BUILD_ID}
+			docker tag ${image} ${userdock}/${image}:v1
+			docker tag ${image2} ${userdock}/${image2}:v1
+			docker image push ${userdock}/${image}
+			docker image push ${userdock}/${image2}
 			EOF"""
 		}
 	    }
