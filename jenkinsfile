@@ -10,13 +10,13 @@ pipeline{
   stages{
       stage('Pull From Backend Repo') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
-                    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                    cd ${directory}
-                    git remote add origin ${url} || git remote set-url origin ${url}
-                    git pull ${url} ${branch}
-                    exit
-                    EOF"""
+                sshagent([credential]) {
+                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+                   cd ${directory}
+                   git remote add origin ${url} || git remote set-url origin ${url}
+                   git pull ${url} ${branch}
+                   exit
+                   EOF"""
                 }
             }
         }
