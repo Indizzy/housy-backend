@@ -34,7 +34,7 @@ pipeline{
           steps{
               sshagent ([credential]) {
                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                  docker-compose -f fe-be.yaml
+                  docker compose -f fe-be.yaml
                   exit
                   EOF"""
               }
