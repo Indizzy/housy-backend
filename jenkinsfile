@@ -1,25 +1,25 @@
 def credential = 'kelompok3'
 def server = 'grup3@116.193.190.138'
 def directory = 'housy-backend'
+def url = 'https://github.com/Indizzy/housy-backend.git'
 def branch = 'main'
-def images = 'indizzy/housy-backend:v1'
+def images = 'grup3/housy-backend:v1'
 
 pipeline{
   agent any
   stages{
-      stage ('docker compose down and pulling new images'){
-          steps{
-              sshagent ([credential]) {
-                  sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                  cd ${directory}
-                  docker-compose down
-                  docker system prune -f 
-                  git pull origin ${branch}
-                  exit
-                  EOF"""
-              }
-          }
-      }
+      stage('Pull From Backend Repo') {
+            steps {
+                sshagent(credentials: ["${sshkeyid}"]) {
+                    sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+                    cd ${directory}
+                    git remote add origin ${url} || git remote set-url origin ${url}
+                    git pull ${url} ${branch}
+                    exit
+                    EOF"""
+                }
+            }
+        }
       stage ('building docker images'){
           steps{
               sshagent ([credential]) {
