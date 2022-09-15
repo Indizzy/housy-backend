@@ -35,23 +35,27 @@ pipeline{
               sshagent ([credential]) {
                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
                   cd ${directory}
-                  docker build -t ${images} .
-                  exit
-                  EOF"""
-              }
-          }       
-      }
-      stage ('docker up'){
-          steps{
-              sshagent ([credential]) {
-                  sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                  cd ${directory}
                   docker-compose -f fe-be.yaml
                   exit
                   EOF"""
               }
           }
       }
+    stage('Push to Docker Hub') {
+            steps {
+                sshagent([credential]) {
+			sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+			docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
+			docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
+			docker image push ${dockerusername}/${imagename}:latest
+			docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
+			docker image rm ${dockerusername}/${imagename}:latest
+			docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
+			docker image rm ${imagename}:${env.BUILD_ID}
+			EOF"""
+		}
+	    }
+        }
   }
 
 }
