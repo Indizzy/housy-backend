@@ -1,14 +1,12 @@
 def branch = "main"
-def remoteurl = "https://github.com/yuuzukatsu/dumbflix-backend.git"
-def remotename = "jenkins"
-def workdir = "~/dumbflix-backend/"
-def ip = "116.193.191.120"
-def username = "kelompok1"
-def imagename = "dumbflix-backend"
-def dockerusername = "yuuzukatsu"
-def sshkeyid = "app-server"
-def telegramapi = "5729352114:AAHCaP5L-_Jjn7mGkxoPlvCnbGQEBXixwiM"
-def telegramid = "-707481763"
+def remoteurl =  "https://github.com/Indizzy/housy-backend"
+def remotename = "origin"
+def workdir = "~/housy-backend/"
+def ip = "116.193.190.138"
+def username = "grup3"
+def imagename = "housy-backend"
+def dockerusername = "indizzy"
+def credential = "kelompok3"
 
 pipeline {
     agent any
@@ -16,7 +14,7 @@ pipeline {
     stages {
         stage('Pull From Backend Repo') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent(credentials: ["${credential}"]) {
                     sh """
                         ssh -l ${username} ${ip} <<pwd
                         cd ${workdir}
@@ -30,7 +28,7 @@ pipeline {
             
         stage('Build Docker Image') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent(credentials: ["${credential}"]) {
                     sh """
                         ssh -l ${username} ${ip} <<pwd
                         cd ${workdir}
@@ -43,7 +41,7 @@ pipeline {
             
         stage('Deploy Image') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent(credentials: ["${credential}"]) {
                     sh """
                         ssh -l ${username} ${ip} <<pwd
                         cd ${workdir}
@@ -58,7 +56,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                sshagent(credentials: ["${sshkeyid}"]) {
+                sshagent(credentials: ["${credential}"]) {
 			sh """
 				ssh -l ${username} ${ip} <<pwd
 				docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
@@ -72,17 +70,13 @@ pipeline {
 			"""
 		}
             }
-        }
+        }    
+         
+   
+      
+  }
+
+       }
 
 
-        stage('Send Success Notification') {
-            steps {
-                sh """
-                    curl -X POST 'https://api.telegram.org/bot${telegramapi}/sendMessage' -d \
-		    'chat_id=${telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
-                """
-            }
-        }
-
-    }
 }
