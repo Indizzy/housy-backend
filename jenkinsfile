@@ -8,18 +8,18 @@ def images = 'indizzy/housy-backend:v1'
 pipeline{
   agent any
   stages{
-      stage('Pull From Backend Repo') {
-            steps {
-                sshagent([credential]) {
-                   sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
-                   cd ${directory}
-                   git remote add origin ${url} || git remote set-url origin ${url}
-                   git pull ${url} ${branch}
-                   exit
-                   EOF"""
-                }
-            }
-        }
+     stage('Pull From Backend Repo') {
+         steps {
+            sshagent([credential]) {
+                sh """ssh -o StrictHostkeyChecking=no ${server} << EOF
+                cd ${directory}
+                git remote add origin ${url} || git remote set-url origin ${url}
+                git pull ${url} ${branch}
+                exit
+                EOF"""
+              }
+          }
+      }
       stage ('building docker images'){
           steps{
               sshagent ([credential]) {
